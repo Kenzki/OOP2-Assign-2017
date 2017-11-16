@@ -19,10 +19,13 @@ public class Snake extends JFrame {
 
     public static void main(String args[])
     {
-        Snake gui=new Snake();
-        gui.setVisible(true);
+        Snake game = new Snake();
+        game.setVisible(true);
+
 
     }
+
+
 
     //Constructor
 
@@ -30,14 +33,14 @@ public class Snake extends JFrame {
 
         super("Snake");
         setSize(600,500);
-        setLocation(400,100);
+        setLocation(600,200);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setResizable(false);
         setVisible(true);
 
-
-
     }
+
+
 
 
 }
