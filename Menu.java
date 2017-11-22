@@ -39,8 +39,8 @@ public class Menu extends JFrame implements ActionListener{
 
     public void actionPerformed (ActionEvent e) {
         if (e.getActionCommand() . equals("Play Game")){
+            dispose();
             new Snake();
-
 
         }
 
