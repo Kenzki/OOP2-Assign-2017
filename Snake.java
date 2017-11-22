@@ -1,5 +1,6 @@
 import javax.swing.*;
 import java.awt.*;
+import java.awt.image.BufferStrategy;
 import java.util.*;
 
 
@@ -14,17 +15,16 @@ public class Snake extends JFrame {
     private int score;
     private int fruitsEaten;
 
-    Random position = new Random();
+    Random spawn = new Random();
 
 
     public static void main(String args[])
     {
-        Snake game = new Snake();
-        game.setVisible(true);
+        Snake s = new Snake();
+        s.setVisible(true);
 
 
     }
-
 
 
     //Constructor
@@ -37,8 +37,32 @@ public class Snake extends JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setResizable(false);
         setVisible(true);
+        this.createBufferStrategy(2);
+        game();
 
     }
+
+    public void game() {
+        drawBackgound();
+
+    }
+
+    public void drawBackgound() {
+        //this draws the background
+        BufferStrategy buffer = this.getBufferStrategy(); //allows to draw everything before its displayed on the screen
+
+        Graphics g= null;
+
+        g = buffer.getDrawGraphics();
+
+        g.setColor(Color.BLACK);
+        g.fillRect(0,0,windowWidth,windowHeight); //fills the same height and width for the set window
+
+
+        buffer.show();
+
+    }
+
 
 
 

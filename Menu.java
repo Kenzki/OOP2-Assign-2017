@@ -39,7 +39,9 @@ public class Menu extends JFrame implements ActionListener{
 
     public void actionPerformed (ActionEvent e) {
         if (e.getActionCommand() . equals("Play Game")){
-           new Snake();
+            new Snake();
+
+
         }
 
         else if (e.getActionCommand() .equals("How To Play")){
