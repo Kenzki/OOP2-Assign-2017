@@ -8,9 +8,16 @@ public class Menu extends JFrame implements ActionListener{
 
     JMenu playMenu,userMenu,fileMenu,infoMenu;
 
-    public static void main(String[] args) {
-        Menu frame = new Menu();
-        frame.setVisible(true);
+    static Menu m;
+
+    public static void main(String args[])
+    {
+        javax.swing.SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                m = new Menu();
+                m.setVisible(true);
+            }});
+
     }
 
     public Menu() {
@@ -22,10 +29,13 @@ public class Menu extends JFrame implements ActionListener{
         pane.setBackground(new Color(50, 150, 92));
         setDefaultCloseOperation(EXIT_ON_CLOSE);
 
+
+
         createPlayMenu();
         createUserMenu();
         createFileMenu();
         createInfoMenu();
+
 
         JMenuBar menuBar = new JMenuBar();
         setJMenuBar(menuBar);
@@ -39,8 +49,17 @@ public class Menu extends JFrame implements ActionListener{
 
     public void actionPerformed (ActionEvent e) {
         if (e.getActionCommand() . equals("Play Game")){
-            dispose();
-            new Snake();
+            //m.dispose();
+            Snake s = new Snake();
+            //m.addKeyListener(s);
+            //s.requestFocus();
+            s.setFocusable(true);
+            s.requestFocus();
+            s.addKeyListener(s);
+
+
+            //s.setVisible(true);
+
 
         }
 
@@ -107,6 +126,7 @@ public class Menu extends JFrame implements ActionListener{
     }
 
 
+
     public void showMessage (String s){
         JOptionPane.showMessageDialog(null,s);
     }
@@ -114,4 +134,6 @@ public class Menu extends JFrame implements ActionListener{
     public void showMessage (JTextArea s){
         JOptionPane.showMessageDialog(null,s);
     }
+
+
 }
