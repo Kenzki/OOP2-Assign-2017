@@ -8,15 +8,11 @@ public class Menu extends JFrame implements ActionListener{
 
     JMenu playMenu,userMenu,fileMenu,infoMenu;
 
-    static Menu m;
+
 
     public static void main(String args[])
     {
-        javax.swing.SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
-                m = new Menu();
-                m.setVisible(true);
-            }});
+        new Menu();
 
     }
 
@@ -28,7 +24,6 @@ public class Menu extends JFrame implements ActionListener{
         Container pane = getContentPane();
         pane.setBackground(new Color(50, 150, 92));
         setDefaultCloseOperation(EXIT_ON_CLOSE);
-
 
 
         createPlayMenu();
@@ -49,17 +44,8 @@ public class Menu extends JFrame implements ActionListener{
 
     public void actionPerformed (ActionEvent e) {
         if (e.getActionCommand() . equals("Play Game")){
-            //m.dispose();
-            Snake s = new Snake();
-            //m.addKeyListener(s);
-            //s.requestFocus();
-            s.setFocusable(true);
-            s.requestFocus();
-            s.addKeyListener(s);
-
-
-            //s.setVisible(true);
-
+            dispose();
+            new Snake();
 
         }
 

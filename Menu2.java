@@ -4,42 +4,23 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
 
-public class Menu2 extends JFrame{
+public class Menu2 {
+    public static void main(String[] args) throws IOException  {
 
+        JFrame f = new JFrame();
+        JPanel s = new JPanel();
 
-    private JFrame menu = new JFrame("Snake");
+        f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-    public static void main(String[] args) {
-        Menu2 m = new Menu2();
-        m.setVisible(true);
+        f.setSize(400,400);
+        f.setVisible(true);
+        s.setLayout(new FlowLayout());
+        JButton p = new JButton("Play");
+        p.setSize(100,100);
+        p.setLocation(50,50);
 
-    }
-
-    public Menu2(){
-
-
-        menu.setLocation(450,200);
-        menu.setSize(600,500);
-        menu.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-
-
-        JButton playGame = new JButton("Play");
-
-        playGame.setSize(200,50);
-        setLocation(300,300);
-        setBackground(Color.BLACK);
-
-        menu.setLayout(null);
-        menu.setVisible(true);
-        menu.add(playGame);
-
-
+        f.add(p);
 
 
     }
-
-
 }
-
-
-

@@ -1,7 +1,8 @@
 
 public class Main {
     public static void main(String[] args) {
-        Menu2 m = new Menu2();
+
+        Menu m = new Menu();
         m.setVisible(true);
 
     }

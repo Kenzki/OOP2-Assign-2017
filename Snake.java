@@ -6,7 +6,7 @@ import java.awt.image.BufferStrategy;
 import java.util.*;
 
 
-public class Snake extends JFrame implements KeyListener {
+public class Snake extends JFrame implements KeyListener,Runnable {
 
     private static int windowWidth = 600;
     private static int windowHeight = 500;
@@ -16,7 +16,8 @@ public class Snake extends JFrame implements KeyListener {
     private Point fruit;
     private int score;
     private int fruitsEaten;
-    private Graphics gRef;
+    private Thread theThread; //this is for the extra thread we need to prevent runtime problems
+    private boolean gameOn; //this will control the game loop, it will become false when the game ends
 
     Random spawn = new Random();
 
@@ -24,9 +25,6 @@ public class Snake extends JFrame implements KeyListener {
     public static void main(String args[])
     {
         Snake s = new Snake();
-        s.setFocusable(true);
-        //s.setVisible(true);
-
     }
 
 
@@ -36,13 +34,12 @@ public class Snake extends JFrame implements KeyListener {
 
         setTitle("Snake");
         setSize(600,500);
-        setLocation(600,200);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setLocation(500,200);
+        setDefaultCloseOperation(EXIT_ON_CLOSE);
         setResizable(false);
         setVisible(true);
-        //pack();
-        this.createBufferStrategy(2);
-        this.addKeyListener(this);
+        createBufferStrategy(2);
+        addKeyListener(this);
         snake = new LinkedList<Point>(); //this creates the linked list object
         snake.addFirst(new Point(20,20)); //returns and positions the first element of the snake, which is the head onto the background
         growSnake(3);
@@ -51,19 +48,28 @@ public class Snake extends JFrame implements KeyListener {
 
 
 
+        /*
+         Original game loop
+
         while (true) {
             long time = System.currentTimeMillis();
             game();
-            if (System.currentTimeMillis() - time <100){
+            while (System.currentTimeMillis() - time <90){
                  //System.out.println("Called");
             }
-        }
+        }*/
+
+
+        //Added by JB since the there was a an issue when trying to run the game from
+        // the menu option on another JFrame, there were conflicts between the game loop executing
+        //and the ability of the system to pick up key event.
+
+        gameOn = true; //set the game loop variable to true
+        start(); //now start the game loop thread
 
     }
 
     public void game() {
-        gRef = getGraphics();
-        //super.paint(gRef);
         drawBackground();
         moveSnake(ax,ay);
 
@@ -84,12 +90,11 @@ public class Snake extends JFrame implements KeyListener {
         drawFruit(g);
 
         buffer.show();
-        //pack();
 
     }
 
     /** snake is linked list with point objects
-     *the for loop, loops around every element in the linkedlist and draws blue square to make up the snakes body
+     *the for loop, loops around every element in the linked list and draws blue square to make up the snakes body
      */
 
     public void drawSnake (Graphics g) {
@@ -126,7 +131,6 @@ public class Snake extends JFrame implements KeyListener {
         snake.getFirst().x += ax;
         snake.getFirst().y += ay;
 
-       // System.out.println( snake.get(0).getLocation());
     }
 
     public void growSnake (int t) {
@@ -137,6 +141,10 @@ public class Snake extends JFrame implements KeyListener {
         }
     }
 
+    public void spawnFruit (int x){
+
+    }
+
 
     public void keyPressed(KeyEvent e) {
         int key = e.getKeyCode();
@@ -144,7 +152,6 @@ public class Snake extends JFrame implements KeyListener {
         if(key == KeyEvent.VK_DOWN) {
             ay=1;
             ax=0;
-            //System.out.println("Called");
         } else if(key == KeyEvent.VK_UP) {
             ay=-1;
             ax=0;
@@ -156,7 +163,7 @@ public class Snake extends JFrame implements KeyListener {
             ax=-1;
 
         }
-          else if(key == KeyEvent.VK_S) {
+        else if(key == KeyEvent.VK_S) {
             ay=1;
             ax=0;
         } else if(key == KeyEvent.VK_W) {
@@ -177,7 +184,49 @@ public class Snake extends JFrame implements KeyListener {
     public void keyTyped(KeyEvent e) {}
 
 
+    //JB - called automatically by the start() method below. Because the game needs to draw information onto the screen
+    //and listen for keyboard/other events at the same time, an extra thread of execution is needed. The run()
+    //method basically ensures that the pane of the JFrame window gets painted/updated every 50 milliseconds
+    //giving us 20 frames per second as such. The thread sleeps in between these updates meaning that the rest
+    //of the time events can be listened for and handled without any conflict
 
+    //Without this extra thread, it was not possible for the game JFrame to pick up any keyboard events or handle any
+    //interactions with the main GUI JFrame window
+
+    public void run()
+    {
+
+        while(gameOn)
+        {
+            try
+            {
+                game();
+
+                Thread.sleep(90); //let the game loop stop for 50ms so keyboard events etc can be handled
+
+            }
+            catch (InterruptedException e)
+            {
+                break;
+            }
+        }
+        System.out.println("Game now over!");
+
+    }
+
+    //JB - This method creates a brand new thread of execution in which the snake game loop will run. It basically creates a new Thread object,
+    //links it with the game instance and sets the thread in motion with the call to start() on the thread reference
+    //The call to start() then automatically calls the run() method above (this is defined in the Runnable interface and overridden by this class)
+
+    public void start()
+    {
+        if (theThread == null)
+        {
+            System.out.println("Creating new thread");
+            theThread = new Thread(this);
+            theThread.start();
+        }
+    }
 
 
 
