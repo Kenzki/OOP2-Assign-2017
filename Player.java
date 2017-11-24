@@ -42,6 +42,7 @@ public class Player {
         this("Not Entered",0,0);
     }
 
+
     public String toString() {
         return "Name: " +getName() + "\nScore: " + getScore() + "\nFruits Eaten: " +getFruitsEaten();
     }

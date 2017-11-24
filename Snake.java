@@ -10,8 +10,8 @@ public class Snake extends JFrame implements KeyListener,Runnable {
 
     private static int windowWidth = 600;
     private static int windowHeight = 500;
-    private int ax;
-    private int ay;
+    private int xPos;
+    private int yPos;
     private LinkedList<Point> snake; //linked list with a point object
     private Point fruit;
     private int score;
@@ -41,12 +41,11 @@ public class Snake extends JFrame implements KeyListener,Runnable {
         createBufferStrategy(2);
         addKeyListener(this);
         snake = new LinkedList<Point>(); //this creates the linked list object
-        snake.addFirst(new Point(20,20)); //returns and positions the first element of the snake, which is the head onto the background
+        snake.addFirst(new Point(10,16)); //returns and positions the first element of the snake, which is the head onto the background
+        fruit = new Point(25,16);
         growSnake(3);
-        ax = 0;
-        ay= 0;
-
-
+        xPos = 0;
+        yPos= 0;
 
         /*
          Original game loop
@@ -59,7 +58,6 @@ public class Snake extends JFrame implements KeyListener,Runnable {
             }
         }*/
 
-
         //Added by JB since the there was a an issue when trying to run the game from
         // the menu option on another JFrame, there were conflicts between the game loop executing
         //and the ability of the system to pick up key event.
@@ -71,9 +69,17 @@ public class Snake extends JFrame implements KeyListener,Runnable {
 
     public void game() {
         drawBackground();
-        moveSnake(ax,ay);
+        moveSnake(xPos,yPos);
+        Point head = snake.getFirst();
+        if(head.equals(fruit)){
+            spawnFruit();
+            growSnake(1);
+            score += 200;
+            fruitsEaten++;
+        }
 
     }
+
 
     public void drawBackground() {
         BufferStrategy buffer = this.getBufferStrategy(); //allows to draw everything before its displayed on the screen
@@ -118,10 +124,9 @@ public class Snake extends JFrame implements KeyListener,Runnable {
 
     public void drawFruit(Graphics g) {
         g.setColor(Color.RED);
-        g.fillOval(300,240,13,13);
+        g.fillOval(fruit.x*15,fruit.y*15,13,13);
 
     }
-
 
     public void moveSnake(int ax, int ay) {
 
@@ -138,43 +143,49 @@ public class Snake extends JFrame implements KeyListener,Runnable {
             Point tail=snake.getLast();
             snake.add(new Point(tail));
             t--;
+
         }
     }
 
-    public void spawnFruit (int x){
+    public void spawnFruit (){
+
+        fruit.x = spawn.nextInt((windowWidth/20)-4)+2;
+        fruit.y = spawn.nextInt((windowHeight/15)-5)+3;
 
     }
 
 
     public void keyPressed(KeyEvent e) {
         int key = e.getKeyCode();
-
+        //for arrow keys
         if(key == KeyEvent.VK_DOWN) {
-            ay=1;
-            ax=0;
+            yPos=1;
+            xPos=0;
         } else if(key == KeyEvent.VK_UP) {
-            ay=-1;
-            ax=0;
+            yPos=-1;
+            xPos=0;
         } else if(key == KeyEvent.VK_RIGHT) {
-            ay=0;
-            ax=1;
+            yPos=0;
+            xPos=1;
         } else if(key == KeyEvent.VK_LEFT) {
-            ay=0;
-            ax=-1;
+            yPos=0;
+            xPos=-1;
+
+        //for w,a,s,d keys
 
         }
         else if(key == KeyEvent.VK_S) {
-            ay=1;
-            ax=0;
+            yPos=1;
+            xPos=0;
         } else if(key == KeyEvent.VK_W) {
-            ay=-1;
-            ax=0;
+            yPos=-1;
+            xPos=0;
         } else if(key == KeyEvent.VK_D) {
-            ay=0;
-            ax=1;
+            yPos=0;
+            xPos=1;
         } else if(key == KeyEvent.VK_A) {
-            ay=0;
-            ax=-1;
+            yPos=0;
+            xPos=-1;
         }
 
     }
@@ -202,7 +213,7 @@ public class Snake extends JFrame implements KeyListener,Runnable {
             {
                 game();
 
-                Thread.sleep(90); //let the game loop stop for 50ms so keyboard events etc can be handled
+                Thread.sleep(70); //let the game loop stop for 70ms so keyboard events etc can be handled
 
             }
             catch (InterruptedException e)

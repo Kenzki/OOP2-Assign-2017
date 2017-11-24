@@ -9,5 +9,6 @@ public class PlayerTest {
         p.setFruitsEaten(Integer.parseInt(JOptionPane.showInputDialog("Enter Fruits Eaten: ")));
 
         JOptionPane.showMessageDialog(null, p.toString());
+
     }
 }

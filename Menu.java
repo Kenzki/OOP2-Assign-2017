@@ -79,8 +79,6 @@ public class Menu extends JFrame implements ActionListener{
         item = new JMenuItem("Register New User");
         userMenu.add(item);
 
-        item = new JMenuItem("Load User Details");
-        userMenu.add(item);
     }
 
     private void createFileMenu() {
