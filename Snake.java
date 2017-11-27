@@ -32,13 +32,13 @@ public class Snake extends JFrame implements KeyListener,Runnable {
 
     public Snake(){
 
-        setTitle("Snake");
+        super("Snake");
         setSize(600,500);
         setLocation(500,200);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
-        setResizable(false);
         setVisible(true);
-        createBufferStrategy(2);
+        setResizable(false);
+        createBufferStrategy(3);
         addKeyListener(this);
         snake = new LinkedList<Point>(); //this creates the linked list object
         snake.addFirst(new Point(10,16)); //returns and positions the first element of the snake, which is the head onto the background
@@ -73,15 +73,33 @@ public class Snake extends JFrame implements KeyListener,Runnable {
         Point head = snake.getFirst();
         if(head.equals(fruit)){
             spawnFruit();
-            growSnake(1);
+            growSnake(3);
             score += 200;
             fruitsEaten++;
         }
+        else if(head.x <= -1.5|| head.x >= windowWidth/14|| head.y <= 0 || head.y >= windowHeight/14){
+
+            gameOver();
+        }
+
+        else if(snake.size()>=7){
+
+            for(int i = 1 ; i<snake.size();i++) {
+                if(head.equals(snake.get(i))){
+                    gameOver();
+                }
+            }
+        }
+
+
+
+
 
     }
 
 
     public void drawBackground() {
+
         BufferStrategy buffer = this.getBufferStrategy(); //allows to draw everything before its displayed on the screen
 
         Graphics g;
@@ -123,7 +141,7 @@ public class Snake extends JFrame implements KeyListener,Runnable {
     }
 
     public void drawFruit(Graphics g) {
-        g.setColor(Color.RED);
+        g.setColor(Color.GREEN);
         g.fillOval(fruit.x*15,fruit.y*15,13,13);
 
     }
@@ -154,6 +172,12 @@ public class Snake extends JFrame implements KeyListener,Runnable {
 
     }
 
+    public void gameOver(){
+        JOptionPane.showMessageDialog(null,"Game Over");
+        System.exit(0);
+    }
+
+
 
     public void keyPressed(KeyEvent e) {
         int key = e.getKeyCode();
@@ -161,6 +185,7 @@ public class Snake extends JFrame implements KeyListener,Runnable {
         if(key == KeyEvent.VK_DOWN) {
             yPos=1;
             xPos=0;
+
         } else if(key == KeyEvent.VK_UP) {
             yPos=-1;
             xPos=0;
