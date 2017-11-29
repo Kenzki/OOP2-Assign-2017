@@ -21,6 +21,11 @@ public class Snake extends JFrame implements KeyListener,Runnable {
 
     Random spawn = new Random();
 
+    private boolean leftDirection = false;
+    private boolean rightDirection = false;
+    private boolean upDirection = false;
+    private boolean downDirection = false;
+
 
     public static void main(String args[])
     {
@@ -38,7 +43,7 @@ public class Snake extends JFrame implements KeyListener,Runnable {
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setVisible(true);
         setResizable(false);
-        createBufferStrategy(3);
+        createBufferStrategy(2);
         addKeyListener(this);
         snake = new LinkedList<Point>(); //this creates the linked list object
         snake.addFirst(new Point(10,16)); //returns and positions the first element of the snake, which is the head onto the background
@@ -90,9 +95,6 @@ public class Snake extends JFrame implements KeyListener,Runnable {
                 }
             }
         }
-
-
-
 
 
     }
@@ -148,8 +150,30 @@ public class Snake extends JFrame implements KeyListener,Runnable {
 
     public void moveSnake(int ax, int ay) {
 
-        for (int i = snake.size()-1; i >= 1; i--) {
-            snake.get(i).setLocation(snake.get(i-1));
+        for (int i = snake.size() - 1; i >= 1; i--) {
+            snake.get(i).setLocation(snake.get(i - 1));
+
+        }
+
+
+        if (leftDirection) {
+            yPos=0;
+            xPos=-1;
+        }
+
+        if  (rightDirection) {
+            yPos=0;
+            xPos=1;
+        }
+
+        if (upDirection) {
+            yPos=-1;
+            xPos=0;
+        }
+
+        if (downDirection) {
+            yPos=1;
+            xPos=0;
         }
         snake.getFirst().x += ax;
         snake.getFirst().y += ay;
@@ -182,35 +206,48 @@ public class Snake extends JFrame implements KeyListener,Runnable {
     public void keyPressed(KeyEvent e) {
         int key = e.getKeyCode();
         //for arrow keys
-        if(key == KeyEvent.VK_DOWN) {
-            yPos=1;
-            xPos=0;
-
-        } else if(key == KeyEvent.VK_UP) {
-            yPos=-1;
-            xPos=0;
-        } else if(key == KeyEvent.VK_RIGHT) {
-            yPos=0;
-            xPos=1;
-        } else if(key == KeyEvent.VK_LEFT) {
-            yPos=0;
-            xPos=-1;
-
-        //for w,a,s,d keys
+        if ((key == KeyEvent.VK_LEFT) && (!rightDirection)) {
+            leftDirection = true;
+            upDirection = false;
+            downDirection = false;
 
         }
-        else if(key == KeyEvent.VK_S) {
-            yPos=1;
-            xPos=0;
-        } else if(key == KeyEvent.VK_W) {
-            yPos=-1;
-            xPos=0;
-        } else if(key == KeyEvent.VK_D) {
-            yPos=0;
-            xPos=1;
-        } else if(key == KeyEvent.VK_A) {
-            yPos=0;
-            xPos=-1;
+
+        else if ((key == KeyEvent.VK_RIGHT) && (!leftDirection)) {
+            rightDirection = true;
+            upDirection = false;
+            downDirection = false;
+        }
+
+        else if ((key == KeyEvent.VK_UP) && (!downDirection)) {
+            upDirection = true;
+            rightDirection = false;
+            leftDirection = false;
+        }
+
+        else if ((key == KeyEvent.VK_DOWN) && (!upDirection)) {
+            downDirection = true;
+            rightDirection = false;
+            leftDirection = false;
+        }
+
+
+        else if(key == KeyEvent.VK_A && (!rightDirection)) {
+            leftDirection = true;
+            upDirection = false;
+            downDirection = false;
+        } else if(key == KeyEvent.VK_D && (!leftDirection)) {
+            rightDirection = true;
+            upDirection = false;
+            downDirection = false;
+        } else if(key == KeyEvent.VK_W && (!downDirection)) {
+            upDirection = true;
+            rightDirection = false;
+            leftDirection = false;
+        } else if(key == KeyEvent.VK_S  && (!upDirection)) {
+            downDirection = true;
+            rightDirection = false;
+            leftDirection = false;
         }
 
     }
@@ -238,7 +275,7 @@ public class Snake extends JFrame implements KeyListener,Runnable {
             {
                 game();
 
-                Thread.sleep(70); //let the game loop stop for 70ms so keyboard events etc can be handled
+                Thread.sleep(50); //let the game loop stop for 50ms so keyboard events etc can be handled
 
             }
             catch (InterruptedException e)
