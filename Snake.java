@@ -3,6 +3,10 @@ import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.image.BufferStrategy;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutput;
+import java.io.ObjectOutputStream;
 import java.util.*;
 
 
@@ -25,12 +29,6 @@ public class Snake extends JFrame implements KeyListener,Runnable {
     private boolean rightDirection = false;
     private boolean upDirection = false;
     private boolean downDirection = false;
-
-
-    public static void main(String args[])
-    {
-        Snake s = new Snake();
-    }
 
 
     //Constructor
@@ -64,7 +62,7 @@ public class Snake extends JFrame implements KeyListener,Runnable {
         }*/
 
         //Added by JB since the there was a an issue when trying to run the game from
-        // the menu option on another JFrame, there were conflicts between the game loop executing
+        //the menu option on another JFrame, there were conflicts between the game loop executing
         //and the ability of the system to pick up key event.
 
         gameOn = true; //set the game loop variable to true
@@ -198,7 +196,29 @@ public class Snake extends JFrame implements KeyListener,Runnable {
 
     public void gameOver(){
         JOptionPane.showMessageDialog(null,"Game Over");
+        Menu m = new Menu();
+        m.addScore();
+
+        try{
+            save();
+            JOptionPane.showMessageDialog(null,"file saved");
+        } catch (IOException e)
+        {
+            JOptionPane.showMessageDialog(null,"Error in saving");
+        }
+
+
+        m.displayScore();
         System.exit(0);
+
+    }
+
+    public void save() throws IOException {
+        ObjectOutput os;
+        os = new ObjectOutputStream(new FileOutputStream("score.dat"));
+        os.writeObject(score);
+        os.close();
+
     }
 
 
@@ -280,7 +300,8 @@ public class Snake extends JFrame implements KeyListener,Runnable {
             }
             catch (InterruptedException e)
             {
-                break;
+
+
             }
         }
         System.out.println("Game now over!");
@@ -298,6 +319,7 @@ public class Snake extends JFrame implements KeyListener,Runnable {
             System.out.println("Creating new thread");
             theThread = new Thread(this);
             theThread.start();
+
         }
     }
 
