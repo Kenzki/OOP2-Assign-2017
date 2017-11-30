@@ -9,8 +9,9 @@ import java.io.*;
 import java.util.*;
 
 
-/*Author Kenneth Malon
+/**Author Kenneth Malon
  */
+
 
 public class Snake extends JFrame implements KeyListener,Runnable {
 
@@ -27,8 +28,6 @@ public class Snake extends JFrame implements KeyListener,Runnable {
     private Thread theThread; //this is for the extra thread we need to prevent runtime problems
     private boolean gameOn; //this will control the game loop, it will become false when the game ends
 
-    //random number generator used for spawning fruits
-    Random spawn = new Random();
 
     //used for validating/handling snakes movement
     private boolean leftDirection = false;
@@ -37,8 +36,7 @@ public class Snake extends JFrame implements KeyListener,Runnable {
     private boolean downDirection = false;
 
 
-    //Class Constructor
-
+    /**Class Constructor*/
     public Snake(){
 
         super("Snake");
@@ -50,28 +48,37 @@ public class Snake extends JFrame implements KeyListener,Runnable {
 
         //since I didn't have an idea what bufferStrategy was this link gave me some tips and insight on how it works
         //https://stackoverflow.com/questions/13590002/understand-bufferstrategy
-        createBufferStrategy(2);
+        createBufferStrategy(3);
         addKeyListener(this);
-        snake = new LinkedList<Point>(); //this creates the linked list object
-        snake.addFirst(new Point(10,16)); //returns and positions the first element of the snake, which is the head onto the background
-        fruit = new Point(25,16);
-        growSnake(3);
-        xPos = 0;
-        yPos= 0;
+        snake = new LinkedList<Point>(); /**this creates the linked list object*/
+        snake.addFirst(new Point(10,16)); /**returns and positions the first element of the snake, which is the head onto the background*/
+        fruit = new Point(25,16);/**position the fruit*/
+        growSnake(3);/**default snake size*/
+        xPos = 0; /**x-axis Position*/
+        yPos= 0; /**y-axis Position*/
 
 
         //Added by JB since the there was a an issue when trying to run the game from
         //the menu option on another JFrame, there were conflicts between the game loop executing
         //and the ability of the system to pick up key event.
 
-        gameOn = true; //set the game loop variable to true
-        start(); //now start the game loop thread
+        gameOn = true; /**set the game loop variable to true*/
+        start(); /**now start the game loop thread*/
 
-    }
+    }//end of constructor
 
 
 
-    /*Draws all graphics into the screen
+    /************************************************
+     * Title: Starting a Snake Game
+     * Author: Jake Gordon
+     * Date: Aug 5, 2011
+     * Availability:http://codeincomplete.com/posts/starting-snakes/(Accessed Nov 22 2017)
+     * Code: Converted from javascript to Java
+     *Looked trough some ideas on how snake game works
+     */
+
+    /**Draws all graphics into the screen
      *Validates the snake moves
      *
      *fruit: If the head of the snake hits the apple this make the snake grow, spawn a
@@ -83,20 +90,20 @@ public class Snake extends JFrame implements KeyListener,Runnable {
         drawBackground();
         moveSnake(xPos,yPos);
         Point head = snake.getFirst();
-        //this checks if the snakes head hits the fruit
+        /**this checks if the snakes head hits the fruit*/
         if(head.equals(fruit)){
             spawnFruit();
             growSnake(2);
             score += 200;
             fruitsEaten++;
         }
-        //this checks if any walls have been hit
+        /**this checks if any walls have been hit*/
         else if(head.x <= -1.5|| head.x >= windowWidth/14|| head.y <= 0 || head.y >= windowHeight/14){
 
             gameOver();
         }
 
-        //this checks if the snake has hit itself
+        /**this checks if the snake has hit itself*/
         else if(snake.size()>=7){
 
             for(int i = 1 ; i<snake.size();i++) {
@@ -110,33 +117,36 @@ public class Snake extends JFrame implements KeyListener,Runnable {
     }
 
 
-    //this draws the background,snake,scores and fruit to the screen
-
+    /**this draws the background,snake,scores and fruit to the screen
+     *
+     */
     public void drawBackground() {
 
-        BufferStrategy buffer = this.getBufferStrategy(); //allows to draw everything before its displayed on the screen
+        BufferStrategy buffer = this.getBufferStrategy(); /**allows to draw everything before its displayed on the screen*/
 
-        Graphics g; //paints images or instances onto the screen
+        Graphics g; /**paints images or instances onto the screen*/
 
-        g = buffer.getDrawGraphics();//getDrawGraphics will draw to one of the buffers
+        /**getDrawGraphics will draw to one of the buffers*/
+        g = buffer.getDrawGraphics();
 
-        //draws a black background
+        /**draws a black background*/
         g.setColor(Color.BLACK);
-        g.fillRect(0,0,windowWidth,windowHeight); //fills the same height and width for the set window
+        g.fillRect(0,0,windowWidth,windowHeight); /**fills the same height and width for the set window*/
 
-        //snake,score and fruit are drawn onto background
+        /**snake,score and fruit are drawn onto background*/
         drawSnake(g);
         drawScores(g);
         drawFruit(g);
 
-        buffer.show();//shows the contents of the backbuffer on the screen
+        /**shows the contents of the backbuffer on the screen*/
+        buffer.show();
 
     }
 
-    /* snake is linked list with point objects
+    /**snake is linked list with point objects
      *the for loop, loops around every element in the linked list and draws blue square to make up the snakes body
+     *
      */
-
     public void drawSnake (Graphics g) {
         for(int i=0; i < snake.size(); i++) {
 
@@ -146,7 +156,7 @@ public class Snake extends JFrame implements KeyListener,Runnable {
         }
     }
 
-    /*draws two strings to the background Totals Score and Fruits Eaten
+    /**draws two strings to the background Totals Score and Fruits Eaten
      */
     public void drawScores(Graphics g) {
         g.setColor(Color.white);
@@ -156,16 +166,26 @@ public class Snake extends JFrame implements KeyListener,Runnable {
 
     }
 
-    /*draws the apple
+    /**draws the apple,
      *apple is a point
      */
     public void drawFruit(Graphics g) {
+
         g.setColor(Color.GREEN);
         g.fillOval(fruit.x*15,fruit.y*15,13,13);
 
     }
 
-    /*this method moves the snakes around the screen
+    /************************************************
+     * Title: Snake Game with swing
+     * Author: Vogol612
+     * Date: March 23, , 2011
+     * Availability: https://codereview.stackexchange.com/questions/158544/snake-game-with-swing(Accessed Nov 22 2017)
+     * Had to research more codes on how snake movements works, to grow snake and to spawn fruit at random location.
+     * To have an idea on how ill code my snake game
+     */
+
+    /**this method moves the snakes around the screen
      *backwards through the linkedlist until its at the second element(the first element is the head)
      *everytime it passes an element , the element inherits the coordinates of the element before it.
      *to move the snake ax and ay is added to the x and y coordinate of the head.
@@ -177,7 +197,7 @@ public class Snake extends JFrame implements KeyListener,Runnable {
 
         }
 
-        //makes the snake move in the respective position, it sets the snakes new position
+        /**makes the snake move in the respective position, it sets the snakes new position*/
         if (leftDirection) {
             yPos=0;
             xPos=-1;
@@ -203,8 +223,8 @@ public class Snake extends JFrame implements KeyListener,Runnable {
 
     }
 
-    /*
-     *this method uses getLast() method which belong to the linkedlist class
+
+    /**this method uses getLast() method which belong to the linkedlist class
      *the getLast() gets the last point of the linkedlist in this case it would bethe tail of the snake
      *a new Point is then added to the tail to grow the snake
      */
@@ -218,12 +238,12 @@ public class Snake extends JFrame implements KeyListener,Runnable {
         }
     }
 
-    /*an object of the Random class called position is created
-     *this object is then used to set a random  x and y coordinate for the apple
+    /**this object is then used to set a random  x and y coordinate for the apple
      *the apple will then be displayed randomly on the screen
      */
-
     public void spawnFruit (){
+        /**random number generator used for spawning fruits*/
+        Random spawn = new Random();
 
         fruit.x = spawn.nextInt((windowWidth/20)-4)+2;
         fruit.y = spawn.nextInt((windowHeight/15)-5)+3;
@@ -231,7 +251,7 @@ public class Snake extends JFrame implements KeyListener,Runnable {
     }
 
 
-    /*This method is called if the snake hits the wall or it body
+    /**This method is called if the snake hits the wall or it body
      *this also saves the user score and displays it
      */
     public void gameOver(){
@@ -267,6 +287,7 @@ public class Snake extends JFrame implements KeyListener,Runnable {
 
     }
 
+    /**save score as data*/
     public void save() throws IOException {
         ObjectOutput os;
         os = new ObjectOutputStream(new FileOutputStream("score.dat"));
@@ -275,13 +296,13 @@ public class Snake extends JFrame implements KeyListener,Runnable {
 
     }
 
-    /*These events occur when keys are pressed, needed to use a boolean
+    /**These events occur when keys are pressed, needed to use a boolean
      *so that the snake wont be able to go to the opposite direction where
      *its heading
      */
     public void keyPressed(KeyEvent e) {
         int key = e.getKeyCode();
-        //for arrow keys
+        /**for arrow keys*/
         if ((key == KeyEvent.VK_LEFT) && (!rightDirection)) {
             leftDirection = true;
             upDirection = false;
@@ -308,7 +329,7 @@ public class Snake extends JFrame implements KeyListener,Runnable {
         }
 
 
-        //for A,W,S,D Keys
+        /**for A,W,S,D Keys*/
         else if(key == KeyEvent.VK_A && (!rightDirection)) {
             leftDirection = true;
             upDirection = false;
@@ -334,15 +355,14 @@ public class Snake extends JFrame implements KeyListener,Runnable {
     public void keyTyped(KeyEvent e) {}
 
 
-    //JB - called automatically by the start() method below. Because the game needs to draw information onto the screen
-    //and listen for keyboard/other events at the same time, an extra thread of execution is needed. The run()
-    //method basically ensures that the pane of the JFrame window gets painted/updated every 50 milliseconds
-    //giving us 20 frames per second as such. The thread sleeps in between these updates meaning that the rest
-    //of the time events can be listened for and handled without any conflict
+    /**JB - called automatically by the start() method below. Because the game needs to draw information onto the screen
+    *and listen for keyboard/other events at the same time, an extra thread of execution is needed. The run()
+    *method basically ensures that the pane of the JFrame window gets painted/updated every 50 milliseconds
+    *giving us 20 frames per second as such. The thread sleeps in between these updates meaning that the rest
+    *of the time events can be listened for and handled without any conflict*/
 
-    //Without this extra thread, it was not possible for the game JFrame to pick up any keyboard events or handle any
-    //interactions with the main GUI JFrame window
-
+    /**Without this extra thread, it was not possible for the game JFrame to pick up any keyboard events or handle any
+    *interactions with the main GUI JFrame window*/
     public void run()
     {
 
@@ -365,10 +385,9 @@ public class Snake extends JFrame implements KeyListener,Runnable {
 
     }
 
-    //JB - This method creates a brand new thread of execution in which the snake game loop will run. It basically creates a new Thread object,
-    //links it with the game instance and sets the thread in motion with the call to start() on the thread reference
-    //The call to start() then automatically calls the run() method above (this is defined in the Runnable interface and overridden by this class)
-
+    /**JB - This method creates a brand new thread of execution in which the snake game loop will run. It basically creates a new Thread object,
+    *links it with the game instance and sets the thread in motion with the call to start() on the thread reference
+    *The call to start() then automatically calls the run() method above (this is defined in the Runnable interface and overridden by this class*/
     public void start()
     {
         if (theThread == null)
@@ -379,7 +398,5 @@ public class Snake extends JFrame implements KeyListener,Runnable {
 
         }
     }
-
-
 
 }

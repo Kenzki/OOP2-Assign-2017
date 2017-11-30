@@ -17,11 +17,13 @@ public class Menu extends JFrame implements ActionListener{
     public Menu() {
         setTitle("Snake Menu");
         //set the frames properties
-        setSize(300,200);
+        setSize(600,450);
         setLocation(600,200);
         setResizable(false);
         Container pane = getContentPane();
-        pane.setBackground(new Color(50, 150, 92));
+        //Collaborated wit Jack Teahan to insert image from Jframe.
+        JLabel picture = new JLabel(new ImageIcon("snakemenu.JPG"));
+        pane.add(picture);
         setDefaultCloseOperation(EXIT_ON_CLOSE);//registers exit upon closing as a default operation
 
 
