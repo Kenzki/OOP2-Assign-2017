@@ -16,22 +16,26 @@ public class Snake extends JFrame implements KeyListener,Runnable {
     private static int windowHeight = 500;
     private int xPos;
     private int yPos;
-    private LinkedList<Point> snake; //linked list with a point object
-    private Point fruit;
-    private int score;
-    private int fruitsEaten;
+    //had to research how linkedlist works so that I can use it
+    //https://www.cs.cmu.edu/~adamchik/15-121/lectures/Linked%20Lists/linked%20lists.html
+    private LinkedList<Point> snake; //linked list with a point object, this list contains the points for snake
+    private Point fruit; //point for fruit
+    private int score; //the current score
+    private int fruitsEaten; //number of fruits that been eaten
     private Thread theThread; //this is for the extra thread we need to prevent runtime problems
     private boolean gameOn; //this will control the game loop, it will become false when the game ends
 
+    //random number generator used for spawning fruits
     Random spawn = new Random();
 
+    //used for validating/handling snakes movement
     private boolean leftDirection = false;
     private boolean rightDirection = false;
     private boolean upDirection = false;
     private boolean downDirection = false;
 
 
-    //Constructor
+    //Class Constructor
 
     public Snake(){
 
@@ -41,6 +45,9 @@ public class Snake extends JFrame implements KeyListener,Runnable {
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setVisible(true);
         setResizable(false);
+
+        //since I didn't have an idea what bufferStrategy was this link gave me some tips and insight on how it works
+        //https://stackoverflow.com/questions/13590002/understand-bufferstrategy
         createBufferStrategy(2);
         addKeyListener(this);
         snake = new LinkedList<Point>(); //this creates the linked list object
@@ -50,16 +57,6 @@ public class Snake extends JFrame implements KeyListener,Runnable {
         xPos = 0;
         yPos= 0;
 
-        /*
-         Original game loop
-
-        while (true) {
-            long time = System.currentTimeMillis();
-            game();
-            while (System.currentTimeMillis() - time <90){
-                 //System.out.println("Called");
-            }
-        }*/
 
         //Added by JB since the there was a an issue when trying to run the game from
         //the menu option on another JFrame, there were conflicts between the game loop executing
@@ -70,21 +67,34 @@ public class Snake extends JFrame implements KeyListener,Runnable {
 
     }
 
+
+
+    /*Draws all graphics into the screen
+     *Validates the snake moves
+     *
+     *fruit: If the head of the snake hits the apple this make the snake grow, spawn a
+     *new fruit, updates the score and fruits eaten.
+     *
+     *snake body: if we collided the wall or the snakes body we call a method that ends the game
+     */
     public void game() {
         drawBackground();
         moveSnake(xPos,yPos);
         Point head = snake.getFirst();
+        //this checks if the snakes head hits the fruit
         if(head.equals(fruit)){
             spawnFruit();
-            growSnake(3);
+            growSnake(2);
             score += 200;
             fruitsEaten++;
         }
+        //this checks if any walls have been hit
         else if(head.x <= -1.5|| head.x >= windowWidth/14|| head.y <= 0 || head.y >= windowHeight/14){
 
             gameOver();
         }
 
+        //this checks if the snake has hit itself
         else if(snake.size()>=7){
 
             for(int i = 1 ; i<snake.size();i++) {
@@ -98,26 +108,30 @@ public class Snake extends JFrame implements KeyListener,Runnable {
     }
 
 
+    //this draws the background,snake,scores and fruit to the screen
+
     public void drawBackground() {
 
         BufferStrategy buffer = this.getBufferStrategy(); //allows to draw everything before its displayed on the screen
 
-        Graphics g;
+        Graphics g; //paints images or instances onto the screen
 
-        g = buffer.getDrawGraphics();
+        g = buffer.getDrawGraphics();//getDrawGraphics will draw to one of the buffers
 
+        //draws a black background
         g.setColor(Color.BLACK);
         g.fillRect(0,0,windowWidth,windowHeight); //fills the same height and width for the set window
 
+        //snake,score and fruit are drawn onto background
         drawSnake(g);
         drawScores(g);
         drawFruit(g);
 
-        buffer.show();
+        buffer.show();//shows the contents of the backbuffer on the screen
 
     }
 
-    /** snake is linked list with point objects
+    /* snake is linked list with point objects
      *the for loop, loops around every element in the linked list and draws blue square to make up the snakes body
      */
 
@@ -130,7 +144,7 @@ public class Snake extends JFrame implements KeyListener,Runnable {
         }
     }
 
-    /**draws two strings to the background Totals Score and Fruits Eaten
+    /*draws two strings to the background Totals Score and Fruits Eaten
      */
     public void drawScores(Graphics g) {
         g.setColor(Color.white);
@@ -140,12 +154,20 @@ public class Snake extends JFrame implements KeyListener,Runnable {
 
     }
 
+    /*draws the apple
+     *apple is a point
+     */
     public void drawFruit(Graphics g) {
         g.setColor(Color.GREEN);
         g.fillOval(fruit.x*15,fruit.y*15,13,13);
 
     }
 
+    /*this method moves the snakes around the screen
+     *backwards through the linkedlist until its at the second element(the first element is the head)
+     *everytime it passes an element , the element inherits the coordinates of the element before it.
+     *to move the snake ax and ay is added to the x and y coordinate of the head.
+     */
     public void moveSnake(int ax, int ay) {
 
         for (int i = snake.size() - 1; i >= 1; i--) {
@@ -153,7 +175,7 @@ public class Snake extends JFrame implements KeyListener,Runnable {
 
         }
 
-
+        //makes the snake move in the respective position, it sets the snakes new position
         if (leftDirection) {
             yPos=0;
             xPos=-1;
@@ -173,10 +195,17 @@ public class Snake extends JFrame implements KeyListener,Runnable {
             yPos=1;
             xPos=0;
         }
+
         snake.getFirst().x += ax;
         snake.getFirst().y += ay;
 
     }
+
+    /*
+     *this method uses getLast() method which belong to the linkedlist class
+     *the getLast() gets the last point of the linkedlist in this case it would bethe tail of the snake
+     *a new Point is then added to the tail to grow the snake
+     */
 
     public void growSnake (int t) {
         while(t > 0) {
@@ -187,6 +216,11 @@ public class Snake extends JFrame implements KeyListener,Runnable {
         }
     }
 
+    /*an object of the Random class called position is created
+     *this object is then used to set a random  x and y coordinate for the apple
+     *the apple will then be displayed randomly on the screen
+     */
+
     public void spawnFruit (){
 
         fruit.x = spawn.nextInt((windowWidth/20)-4)+2;
@@ -194,6 +228,10 @@ public class Snake extends JFrame implements KeyListener,Runnable {
 
     }
 
+
+    /*This method is called if the snake hits the wall or it body
+     *this also saves the user score and displays it
+     */
     public void gameOver(){
         JOptionPane.showMessageDialog(null,"Game Over");
         Menu m = new Menu();
@@ -221,8 +259,10 @@ public class Snake extends JFrame implements KeyListener,Runnable {
 
     }
 
-
-
+    /*These events occur when keys are pressed, needed to use a boolean
+     *so that the snake wont be able to go to the opposite direction where
+     *its heading
+     */
     public void keyPressed(KeyEvent e) {
         int key = e.getKeyCode();
         //for arrow keys
@@ -252,6 +292,7 @@ public class Snake extends JFrame implements KeyListener,Runnable {
         }
 
 
+        //for A,W,S,D Keys
         else if(key == KeyEvent.VK_A && (!rightDirection)) {
             leftDirection = true;
             upDirection = false;

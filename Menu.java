@@ -13,15 +13,17 @@ public class Menu extends JFrame implements ActionListener{
     int total=0;
 
 
-
+    //constructor
     public Menu() {
         setTitle("Snake Menu");
+        //set the frames properties
         setSize(300,200);
         setLocation(600,200);
         setResizable(false);
         Container pane = getContentPane();
         pane.setBackground(new Color(50, 150, 92));
-        setDefaultCloseOperation(EXIT_ON_CLOSE);
+        setDefaultCloseOperation(EXIT_ON_CLOSE);//registers exit upon closing as a default operation
+
 
         createPlayMenu();
         createFileMenu();
@@ -56,7 +58,7 @@ public class Menu extends JFrame implements ActionListener{
             score = (ArrayList<Player>) is.readObject();
             is.close();
         } catch (Exception e) {
-            JOptionPane.showMessageDialog(null, "open didn't work");
+            JOptionPane.showMessageDialog(null, "Open didn't work");
             e.printStackTrace();
         }
 
