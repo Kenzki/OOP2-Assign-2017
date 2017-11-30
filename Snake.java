@@ -1,14 +1,16 @@
+import jdk.nashorn.internal.scripts.JO;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.image.BufferStrategy;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.ObjectOutput;
-import java.io.ObjectOutputStream;
+import java.io.*;
 import java.util.*;
 
+
+/*Author Kenneth Malon
+ */
 
 public class Snake extends JFrame implements KeyListener,Runnable {
 
@@ -235,19 +237,33 @@ public class Snake extends JFrame implements KeyListener,Runnable {
     public void gameOver(){
         JOptionPane.showMessageDialog(null,"Game Over");
         Menu m = new Menu();
-        m.addScore();
+        m.addScore();//add score using a method from the menu class
+        m.displayScore();//displays score using a method from menu class
 
         try{
             save();
             JOptionPane.showMessageDialog(null,"file saved");
-        } catch (IOException e)
-        {
-            JOptionPane.showMessageDialog(null,"Error in saving");
+        } catch (IOException e) {
+            JOptionPane.showMessageDialog(null, "Error in saving");
         }
 
-
-        m.displayScore();
+         //exits the game
         System.exit(0);
+
+        //had to remove this since the JOptionPane loop all the time and user cant play another game
+       // int playAgain = JOptionPane.showConfirmDialog(null,"Play Again","Game Over",JOptionPane.YES_NO_CANCEL_OPTION);
+       // if(playAgain==1){
+
+       //     System.exit(0);
+       // }
+       // else if(playAgain==0) {
+
+       //     Snake s1 =new Snake();
+       // }
+       // else {
+       //     System.exit(0);
+       // }
+
 
     }
 
@@ -363,7 +379,6 @@ public class Snake extends JFrame implements KeyListener,Runnable {
 
         }
     }
-
 
 
 
