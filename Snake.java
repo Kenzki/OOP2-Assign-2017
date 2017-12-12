@@ -21,6 +21,7 @@ public class Snake extends JFrame implements KeyListener,Runnable {
     private int yPos;
     //had to research how linkedlist works so that I can use it
     //https://www.cs.cmu.edu/~adamchik/15-121/lectures/Linked%20Lists/linked%20lists.html
+    //an implementation of a type of linked list data structure
     private LinkedList<Point> snake; //linked list with a point object, this list contains the points for snake
     private Point fruit; //point for fruit
     private int score; //the current score
@@ -90,6 +91,8 @@ public class Snake extends JFrame implements KeyListener,Runnable {
         drawBackground();
         moveSnake(xPos,yPos);
         Point head = snake.getFirst();
+        //*This helped me create the logic of the game, fruit spawn and scoring
+        //*http://psnbtech.blogspot.ie/2012/01/tutorial-java-creating-snake-game-part_8839.html
         /**this checks if the snakes head hits the fruit*/
         if(head.equals(fruit)){
             spawnFruit();
@@ -97,6 +100,7 @@ public class Snake extends JFrame implements KeyListener,Runnable {
             score += 200;
             fruitsEaten++;
         }
+
         /**this checks if any walls have been hit*/
         else if(head.x <= -1.5|| head.x >= windowWidth/14|| head.y <= 0 || head.y >= windowHeight/14){
 
@@ -124,6 +128,8 @@ public class Snake extends JFrame implements KeyListener,Runnable {
 
         BufferStrategy buffer = this.getBufferStrategy(); /**allows to draw everything before its displayed on the screen*/
 
+        //since I didn't have an idea what bufferStrategy and graphics was this link gave me some tips and insight on how it works
+        //https://stackoverflow.com/questions/13590002/understand-bufferstrategy
         Graphics g; /**paints images or instances onto the screen*/
 
         /**getDrawGraphics will draw to one of the buffers*/
@@ -133,12 +139,12 @@ public class Snake extends JFrame implements KeyListener,Runnable {
         g.setColor(Color.BLACK);
         g.fillRect(0,0,windowWidth,windowHeight); /**fills the same height and width for the set window*/
 
-        /**snake,score and fruit are drawn onto background*/
+        /**snake,score and fruit are drawn onto the background*/
         drawSnake(g);
         drawScores(g);
         drawFruit(g);
 
-        /**shows the contents of the backbuffer on the screen*/
+        /**shows the contents of the buffer on the screen*/
         buffer.show();
 
     }
@@ -182,7 +188,6 @@ public class Snake extends JFrame implements KeyListener,Runnable {
      * Date: March 23, , 2011
      * Availability: https://codereview.stackexchange.com/questions/158544/snake-game-with-swing(Accessed Nov 22 2017)
      * Had to research more codes on how snake movements works, to grow snake and to spawn fruit at random location.
-     * To have an idea on how ill code my snake game
      */
 
     /**this method moves the snakes around the screen
@@ -198,6 +203,7 @@ public class Snake extends JFrame implements KeyListener,Runnable {
         }
 
         /**makes the snake move in the respective position, it sets the snakes new position*/
+
         if (leftDirection) {
             yPos=0;
             xPos=-1;
@@ -222,8 +228,8 @@ public class Snake extends JFrame implements KeyListener,Runnable {
         snake.getFirst().y += ay;
 
     }
-
-
+     //This help me make the method for the grow Snake in the method managing snake growth
+     //https://codeincomplete.com/posts/starting-snakes
     /**this method uses getLast() method which belong to the linkedlist class
      *the getLast() gets the last point of the linkedlist in this case it would bethe tail of the snake
      *a new Point is then added to the tail to grow the snake
@@ -237,6 +243,8 @@ public class Snake extends JFrame implements KeyListener,Runnable {
 
         }
     }
+    //This helped me make a method to make the fruit spawn
+    //https://github.com/LazoCoder/Snake/blob/master/Snake/GameBoard.java
 
     /**this object is then used to set a random  x and y coordinate for the apple
      *the apple will then be displayed randomly on the screen
@@ -372,7 +380,7 @@ public class Snake extends JFrame implements KeyListener,Runnable {
             {
                 game();
 
-                Thread.sleep(50); //let the game loop stop for 50ms so keyboard events etc can be handled
+                Thread.sleep(80); //let the game loop stop for 80ms so keyboard events etc can be handled
 
             }
             catch (InterruptedException e)

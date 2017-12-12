@@ -9,6 +9,9 @@ public class Menu extends JFrame implements ActionListener{
 
 
     JMenu playMenu,fileMenu,scoreMenu,infoMenu;
+
+    //I looked through the class notes and example java code in the xdrive I also research on the internet on how to uses arraylist
+    //http://www.homeandlearn.co.uk/java/array_lists.html + Class notes
     ArrayList<Player> score = new ArrayList<Player>();
     int total=0;
 
